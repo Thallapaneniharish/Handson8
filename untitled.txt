@@ -1,0 +1,198 @@
+def partition(arr, start, end):
+    pivot = arr[end]
+    left = start - 1
+
+    for right in range(start, end):
+        if arr[right] <= pivot:
+            left += 1
+            arr[left], arr[right] = arr[right], arr[left]
+
+    arr[left + 1], arr[end] = arr[end], arr[left + 1]
+    return left + 1
+
+
+def quickselect(arr, start, end, k):
+    if start <= end:
+        pivot_index = partition(arr, start, end)
+        if pivot_index == k:
+            return arr[pivot_index]
+        elif pivot_index < k:
+            return quickselect(arr, pivot_index + 1, end, k)
+        else:
+            return quickselect(arr, start, pivot_index - 1, k)
+
+
+def find_ith_order_statistic(arr, i):
+    return quickselect(arr, 0, len(arr) - 1, i)
+
+
+arr = [3, 1, 4, 7, 2, 5, 9, 6, 8]
+ith = 4
+print(f"The {ith}th order statistic is: {find_ith_order_statistic(arr, ith)}")
+
+
+
+The 4th order statistic is: 5
+
+QUEUE:
+
+class Queue:
+    def __init__(self, capacity=10):
+        self.capacity = capacity
+        self.items = [None] * self.capacity
+        self.front = 0
+        self.rear = -1
+        self.size = 0
+
+    def enqueue(self, item):
+        if self.size == self.capacity:
+            self._resize()
+        self.rear = (self.rear + 1) % self.capacity
+        self.items[self.rear] = item
+        self.size += 1
+
+    def dequeue(self):
+        if not self.is_empty():
+            removed_item = self.items[self.front]
+            self.items[self.front] = None
+            self.front = (self.front + 1) % self.capacity
+            self.size -= 1
+            return removed_item
+        else:
+            raise IndexError("Queue is empty")
+
+    def is_empty(self):
+        return self.size == 0
+
+    def get_size(self):  # Renamed size to get_size
+        return self.size
+
+    def _resize(self):
+        new_capacity = 2 * self.capacity
+        new_items = [None] * new_capacity
+        for i in range(self.size):
+            new_items[i] = self.items[(self.front + i) % self.capacity]
+        self.items = new_items
+        self.capacity = new_capacity
+        self.front = 0
+        self.rear = self.size - 1
+
+# Example usage:
+queue = Queue()
+
+queue.enqueue(10)
+queue.enqueue(20)
+queue.enqueue(30)
+
+print("Dequeued item:", queue.dequeue())
+print("Is the queue empty?", queue.is_empty())
+print("Size of the queue:", queue.get_size())  # Corrected to get_size
+
+Dequeued item: 10
+Is the queue empty? False
+Size of the queue: 2
+
+STACK:
+
+class Stack:
+    def __init__(self):
+        self.items = []
+
+    def push(self, item):
+        self.items.append(item)
+
+    def pop(self):
+        if not self.is_empty():
+            return self.items.pop()
+        else:
+            raise IndexError("Stack is empty")
+
+    def is_empty(self):
+        return len(self.items) == 0
+
+    def get_size(self):  # Renamed size to get_size
+        return len(self.items)
+
+# Create a new stack
+stack = Stack()
+
+# Push some elements
+stack.push(5)
+stack.push(10)
+stack.push(15)
+
+# Pop an element
+print("Popped item:", stack.pop())
+
+# Check if the stack is empty
+print("Is the stack empty?", stack.is_empty())
+
+# Get the size of the stack
+print("Size of the stack:", stack.get_size())  # Corrected to get_size
+
+
+Popped item: 15
+Is the stack empty? False
+Size of the stack: 2
+
+LINKEDLIST:
+
+
+class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+class LinkedList:
+    def __init__(self):
+        self.head = None
+
+    def append(self, data):
+        new_node = Node(data)
+        if self.head is None:
+            self.head = new_node
+        else:
+            current = self.head
+            while current.next:
+                current = current.next
+            current.next = new_node
+
+    def prepend(self, data):
+        new_node = Node(data)
+        new_node.next = self.head
+        self.head = new_node
+
+    def delete(self, data):
+        if self.head is None:
+            return
+        if self.head.data == data:
+            self.head = self.head.next
+            return
+        current = self.head
+        while current.next:
+            if current.next.data == data:
+                current.next = current.next.next
+                return
+            current = current.next
+
+    def display(self):
+        current = self.head
+        while current:
+            print(current.data, end=" -> ")
+            current = current.next
+        print("None")
+
+# Example usage:
+linked_list = LinkedList()
+linked_list.append(1)
+linked_list.append(2)
+linked_list.append(3)
+linked_list.prepend(0)
+linked_list.display()  # Output: 0 -> 1 -> 2 -> 3 -> None
+linked_list.delete(2)
+linked_list.display()  # Output: 0 -> 1 -> 3 -> None
+
+0 -> 4 -> 2 -> 9 -> None
+0 -> 4 -> 9 -> None
+
+
